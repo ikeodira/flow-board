@@ -3,7 +3,8 @@ import React from "react";
 import ImageEl from "../../components/utils/imageEl";
 import LogoImg from "../../assets/logo.svg";
 import LogoutIcon from "@mui/icons-material/ExitToApp";
-import useStore from "../../store";
+import { signOut } from "firebase/auth";
+import { auth } from "../../firebase";
 
 function Topbar({ openModal }) {
   return (
@@ -24,7 +25,11 @@ function Topbar({ openModal }) {
           <Button variant="contained" onClick={openModal}>
             Create Board
           </Button>
-          <Button startIcon={<LogoutIcon />} color="inherit">
+          <Button
+            onClick={() => signOut(auth)}
+            startIcon={<LogoutIcon />}
+            color="inherit"
+          >
             Logout
           </Button>
         </Stack>

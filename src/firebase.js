@@ -23,14 +23,9 @@ export const auth = getAuth(app);
 export const fbFunctions = getFunctions(app);
 
 //its-ignore
-// if (process.env.NODE_ENV === "development") {
-//   connectAuthEmulator(auth, "http://localhost:9098");
-//   connectFirestoreEmulator(db, "localhost", 8082);
-//   connectFunctionsEmulator(fbFunctions, "localhost", 5002);
-// }
-
 if (process.env.NODE_ENV === "development") {
+  console.log("Connecting to Firebase Emulators...");
   connectAuthEmulator(auth, "http://localhost:9099");
-  connectFirestoreEmulator(db, "localhost", 8080);
+  connectFirestoreEmulator(db, "localhost", 8081);
   connectFunctionsEmulator(fbFunctions, "localhost", 5001);
 }
