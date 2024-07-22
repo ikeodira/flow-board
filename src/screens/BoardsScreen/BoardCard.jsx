@@ -2,8 +2,10 @@ import React from "react";
 import { Stack, Grid, Typography, IconButton, Box } from "@mui/material";
 import OpenIcon from "@mui/icons-material/Launch";
 import { colors } from "../../theme";
+import { useNavigate } from "react-router-dom";
 
-function BoardCard({ name, color, createdAt }) {
+function BoardCard({ name, color, createdAt, id }) {
+  const navigate = useNavigate();
   return (
     <Grid item xs={3}>
       <Stack
@@ -28,7 +30,7 @@ function BoardCard({ name, color, createdAt }) {
               {name}
             </Typography>
           </Box>
-          <IconButton size="small">
+          <IconButton onClick={() => navigate(`/boards/${id}`)} size="small">
             <OpenIcon />
           </IconButton>
         </Stack>

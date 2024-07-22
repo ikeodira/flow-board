@@ -5,6 +5,9 @@ import {
   getDocs,
   query,
   orderBy,
+  doc,
+  getDoc,
+  updateDoc,
 } from "firebase/firestore";
 import { db } from "../firebase";
 import { getAuth } from "firebase/auth";
@@ -18,14 +21,41 @@ const useApp = () => {
   const boardsColRef = collection(db, `users/${uid}/boards`);
   const { setBoards, addBoard } = useStore();
 
+  const updateBoardData = async (boardId, tabs) => {
+    try {
+      const docRef = doc(db, `users/${uid}/boardsData/${boardId}`);
+      await updateDoc(docRef, { tabs, lastUpdate: serverTimestamp() });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const fetchBoard = async (boardId) => {
+    const docRef = doc(db, `users/${uid}/boardsData/${boardId}`);
+    try {
+      const doc = await getDoc(docRef);
+      if (doc.exists) {
+        return doc.data();
+      }
+      return null;
+    } catch (error) {
+      console.log("fetchBoards ", error.name);
+    }
+  };
+
   const createBoard = async ({ name, color }) => {
     try {
-      await addDoc(boardsColRef, {
+      const doc = await addDoc(boardsColRef, {
         name,
         color,
         createdAt: serverTimestamp(),
       });
-      addBoard({ name, color, createdAt: new Date().toLocaleDateString() });
+      addBoard({
+        name,
+        color,
+        createdAt: new Date().toLocaleString("en-US"),
+        id: doc.id,
+      });
     } catch (error) {
       //TODO showing the message in toaster.
       console.log(error);
@@ -40,7 +70,7 @@ const useApp = () => {
       const boards = querySnapshot.docs.map((doc) => ({
         ...doc.data(),
         id: doc.id,
-        createdAt: doc.data().createdAt.toDate().toLocaleDateString(),
+        createdAt: doc.data().createdAt.toDate().toLocaleString("en-US"),
       }));
 
       setBoards(boards);
@@ -54,6 +84,8 @@ const useApp = () => {
   return {
     createBoard,
     fetchBoards,
+    fetchBoard,
+    updateBoardData,
   };
 };
 

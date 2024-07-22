@@ -30,12 +30,7 @@ function BoardsScreen() {
       <Stack mt={5} px={5}>
         <Grid container spacing={4}>
           {boards.map((board) => (
-            <BoardCard
-              key={board.id}
-              name={board.name}
-              color={board.color}
-              createdAt={board.createdAt}
-            />
+            <BoardCard key={board.id} {...board} />
           ))}
         </Grid>
       </Stack>
