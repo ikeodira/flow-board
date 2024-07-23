@@ -5,6 +5,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import useStore from "../../store";
 import useApp from "../../hooks/useApp";
 import AppLoader from "../../components/layout/AppLoader";
+import BoardNotReady from "./BoardNotReady";
 
 function BoardScreen() {
   const navigate = useNavigate();
@@ -13,9 +14,20 @@ function BoardScreen() {
   const [loading, setLoading] = useState(true);
   const { boards, areBoardsFetched } = useStore();
   const { boardId } = useParams();
-  const { fetchBoard } = useApp();
+  const { fetchBoard, deleteBoard } = useApp();
   const board = useMemo(() => boards.find((b) => b.id === boardId), []);
   const boardData = useMemo(() => data, [data]);
+
+  const handleDeleteBoard = useCallback(async () => {
+    if (!window.confirm("Do you want to delete this board?")) return;
+    try {
+      setLoading(true);
+      await deleteBoard(boardId);
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
+  }, []);
 
   const handleUpdateLastUpdated = useCallback(() =>
     setLastUpdated(new Date().toLocaleString("en-US"), [])
@@ -45,6 +57,7 @@ function BoardScreen() {
 
   if (!board) return null;
   if (loading) return <AppLoader />;
+  if (!data) return <BoardNotReady />;
 
   return (
     <h1>
@@ -52,8 +65,13 @@ function BoardScreen() {
         name={board.name}
         color={board.color}
         lastUpdated={lastUpdated}
+        deleteBoard={handleDeleteBoard}
       />
-      <BoardInterface boardData={boardData} boardId={boardId} updateLastUpdated={handleUpdateLastUpdated} />
+      <BoardInterface
+        boardData={boardData}
+        boardId={boardId}
+        updateLastUpdated={handleUpdateLastUpdated}
+      />
     </h1>
   );
 }

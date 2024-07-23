@@ -2,7 +2,10 @@
 // const logger = require("firebase-functions/logger");
 const { initializeApp } = require("firebase-admin/app");
 const { getFirestore, FieldValue } = require("firebase-admin/firestore");
-const { onDocumentCreated } = require("firebase-functions/v2/firestore");
+const {
+  onDocumentCreated,
+  onDocumentDeleted,
+} = require("firebase-functions/v2/firestore");
 
 initializeApp();
 
@@ -19,5 +22,14 @@ exports.createBoardData = onDocumentCreated(
       },
       lastUpdate: FieldValue.serverTimestamp(),
     });
+  }
+);
+
+exports.deleteBoardData = onDocumentDeleted(
+  "users/{uid}/boards/{boardId}",
+  async (event) => {
+    const { uid, boardId } = event.params;
+    const firestore = getFirestore();
+    return await firestore.doc(`users/${uid}/boardsData/${boardId}`).delete();
   }
 );

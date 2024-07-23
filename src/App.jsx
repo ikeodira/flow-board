@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import theme from "./theme";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./firebase";
@@ -50,6 +50,7 @@ function App() {
             path="/boards/:boardId"
             element={<PrivateRoute Component={BoardScreen} />}
           />
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </BrowserRouter>
     </ThemeProvider>
